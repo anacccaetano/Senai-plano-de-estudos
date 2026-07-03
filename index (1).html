@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plano de Estudos — Prova SENAI/SESI-RJ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0E2238;
+    --bg-grid: rgba(91,155,213,0.10);
+    --panel: #15304D;
+    --panel-border: #2A4B6B;
+    --line: #5B9BD5;
+    --ink: #EAF2FB;
+    --ink-dim: #9FB6CC;
+    --accent: #F2A93B;
+    --accent-dim: #7A5B26;
+    --done: #6FCF97;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(var(--bg-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+    background-size: 28px 28px;
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    padding-bottom: 80px;
+  }
+  h1,h2,h3{ font-family:'Space Grotesk', sans-serif; margin:0; }
+
+  header{
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 48px 20px 24px;
+  }
+  .eyebrow{
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  h1{
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 700;
+    line-height: 1.05;
+    max-width: 720px;
+  }
+  .subtitle{
+    color: var(--ink-dim);
+    margin-top: 14px;
+    font-size: 14px;
+    max-width: 620px;
+    line-height: 1.6;
+  }
+
+  /* GAUGE */
+  .gauge-row{
+    display:flex;
+    align-items:center;
+    gap: 28px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+  .gauge{
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: conic-gradient(var(--accent) calc(var(--pct,0) * 1%), #1E3A56 0);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position: relative;
+    flex-shrink:0;
+  }
+  .gauge::before{
+    content:"";
+    position:absolute;
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--panel-border);
+  }
+  .gauge-value{
+    position:relative;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size: 22px;
+    color: var(--ink);
+  }
+  .gauge-label{
+    font-size: 12px;
+    color: var(--ink-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .gauge-stats{ font-size: 13px; color: var(--ink-dim); margin-top: 6px; }
+
+  .countdown{
+    margin-left: auto;
+    text-align: right;
+    padding-left: 20px;
+    border-left: 1px dashed var(--panel-border);
+  }
+  .countdown-label{
+    font-size: 11px;
+    color: var(--ink-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .countdown-value{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 34px;
+    color: var(--accent);
+    line-height: 1.1;
+  }
+  .countdown-value span{
+    font-size: 14px;
+    color: var(--ink-dim);
+    font-weight: 500;
+    margin-left: 4px;
+  }
+  @media (max-width: 700px){
+    .countdown{ margin-left: 0; padding-left: 0; border-left: none; text-align: left; }
+  }
+
+  main{
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .subject{
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 4px;
+    margin-bottom: 20px;
+    overflow:hidden;
+  }
+  .subject-head{
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    padding: 18px 22px;
+    cursor:pointer;
+    border-bottom: 1px dashed var(--panel-border);
+    gap: 16px;
+  }
+  .subject-head-left{
+    display:flex;
+    align-items:center;
+    gap: 16px;
+  }
+  .order-tag{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size: 13px;
+    color: var(--bg);
+    background: var(--accent);
+    width: 30px; height:30px;
+    border-radius: 4px;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .subject-name{
+    font-family:'Space Grotesk', sans-serif;
+    font-size: 19px;
+    font-weight:600;
+  }
+  .subject-meta{
+    font-size: 11px;
+    color: var(--ink-dim);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+  .subject-head-right{
+    display:flex;
+    align-items:center;
+    gap: 14px;
+  }
+  .subject-pct{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--accent);
+    min-width: 42px;
+    text-align:right;
+  }
+  .chev{
+    color: var(--ink-dim);
+    transition: transform 0.2s ease;
+    font-size: 14px;
+  }
+  .subject.open .chev{ transform: rotate(90deg); }
+
+  .bar-track{
+    height: 5px;
+    background: #1E3A56;
+  }
+  .bar-fill{
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
+  /* POMODORO */
+  .pomodoro{
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 4px;
+    margin-bottom: 20px;
+    padding: 20px 22px;
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .pomodoro-left{
+    display:flex;
+    align-items:center;
+    gap: 20px;
+  }
+  .pomodoro-time{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 40px;
+    color: var(--ink);
+    min-width: 118px;
+    letter-spacing: 0.02em;
+  }
+  .pomodoro-time.running{ color: var(--accent); }
+  .pomodoro-info{ display:flex; flex-direction:column; gap:4px; }
+  .pomodoro-mode{
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+  .mode-toggle{
+    display:flex;
+    gap: 6px;
+  }
+  .mode-btn{
+    background: transparent;
+    border: 1px solid var(--panel-border);
+    color: var(--ink-dim);
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  .mode-btn.active{
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .pomodoro-controls{
+    display:flex;
+    gap: 10px;
+  }
+  .pomo-btn{
+    font-family:'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 10px 18px;
+    border-radius: 4px;
+    border: 1px solid var(--panel-border);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .pomo-btn.primary{
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+  }
+  .pomo-btn:hover{ opacity: 0.85; }
+  @media (max-width: 640px){
+    .pomodoro{ flex-direction: column; align-items: flex-start; }
+  }
+
+  .pomo-history{
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    padding: 14px 22px 18px;
+    margin-top: -20px;
+    margin-bottom: 20px;
+  }
+  .pomo-history-label{
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin-bottom: 10px;
+  }
+  .pomo-history-days{
+    display:flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .pomo-day{
+    background: #1E3A56;
+    border: 1px solid var(--panel-border);
+    border-radius: 4px;
+    padding: 8px 12px;
+    min-width: 64px;
+    text-align:center;
+  }
+  .pomo-day.today{ border-color: var(--accent); }
+  .pomo-day-date{
+    font-size: 10px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .pomo-day-count{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .pomo-day-count span{
+    font-size: 10px;
+    color: var(--ink-dim);
+    font-weight: 500;
+  }
+  .pomo-empty{
+    font-size: 12px;
+    color: var(--ink-dim);
+  }
+
+  .items{
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+  .subject.open .items{
+    max-height: 2000px;
+  }
+  .item-list{
+    list-style:none;
+    margin:0;
+    padding: 8px 12px 16px;
+  }
+  .item{
+    display:flex;
+    align-items:flex-start;
+    gap: 12px;
+    padding: 11px 10px;
+    border-radius: 4px;
+    cursor:pointer;
+    transition: background 0.15s ease;
+  }
+  .item:hover{ background: rgba(91,155,213,0.08); }
+  .item input{
+    margin-top: 3px;
+    width: 16px; height:16px;
+    accent-color: var(--accent);
+    flex-shrink:0;
+    cursor:pointer;
+  }
+  .item label{
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--ink);
+    cursor:pointer;
+  }
+  .item.checked label{
+    color: var(--ink-dim);
+    text-decoration: line-through;
+    text-decoration-color: var(--done);
+  }
+  .item b{ color: var(--accent); font-weight: 600; }
+  .item.checked b{ color: var(--done); }
+
+  footer{
+    max-width: 980px;
+    margin: 40px auto 0;
+    padding: 0 20px;
+    color: var(--ink-dim);
+    font-size: 12px;
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .reset-btn{
+    background: transparent;
+    border: 1px solid var(--panel-border);
+    color: var(--ink-dim);
+    font-family:'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 8px 14px;
+    border-radius: 4px;
+    cursor:pointer;
+  }
+  .reset-btn:hover{ border-color: var(--accent); color: var(--accent); }
+
+  @media (max-width: 600px){
+    .subject-head{ padding: 14px 16px; }
+    .subject-name{ font-size: 16px; }
+    .gauge{ width: 96px; height:96px; }
+    .gauge::before{ width: 74px; height:74px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Prova SENAI / SESI-RJ — 25/07/2026</div>
+  <h1>Ordem de serviço: seu estudo até o dia da prova.</h1>
+  <p class="subtitle">Marque os tópicos conforme for revisando. Comece pela matéria 01 — Matemática puxa os outros conteúdos e é a que mais precisa de continuidade.</p>
+
+  <div class="gauge-row">
+    <div class="gauge" id="mainGauge" style="--pct:0">
+      <span class="gauge-value" id="mainGaugeValue">0%</span>
+    </div>
+    <div>
+      <div class="gauge-label">Progresso geral</div>
+      <div class="gauge-stats" id="mainStats">0 de 0 tópicos concluídos</div>
+    </div>
+    <div class="countdown">
+      <div class="countdown-label">Faltam para a prova</div>
+      <div class="countdown-value" id="countdownValue">-- <span>dias</span></div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="pomodoro">
+    <div class="pomodoro-left">
+      <div class="pomodoro-time" id="pomoTime">25:00</div>
+      <div class="pomodoro-info">
+        <div class="pomodoro-mode" id="pomoModeLabel">Modo: Foco</div>
+        <div class="mode-toggle">
+          <button class="mode-btn active" data-mode="focus">Foco 25min</button>
+          <button class="mode-btn" data-mode="short">Pausa 5min</button>
+          <button class="mode-btn" data-mode="long">Pausa 15min</button>
+        </div>
+      </div>
+    </div>
+    <div class="pomodoro-controls">
+      <button class="pomo-btn primary" id="pomoStart">Iniciar</button>
+      <button class="pomo-btn" id="pomoReset">Zerar</button>
+    </div>
+  </div>
+  <div class="pomo-history">
+    <div class="pomo-history-label">Histórico de foco (todos os dias)</div>
+    <div class="pomo-history-days" id="pomoHistoryDays"></div>
+  </div>
+
+  <div id="subjects"></div>
+</main>
+
+<footer>
+  <span>Progresso salvo automaticamente neste navegador.</span>
+  <button class="reset-btn" id="resetBtn">Zerar progresso</button>
+</footer>
+
+<script>
+const DATA = [
+  {
+    id: "matematica",
+    order: "01",
+    name: "Matemática",
+    tag: "15 questões · comece por aqui",
+    items: [
+      "Aritmética básica: operações, MMC/MDC, critérios de divisibilidade, números primos, propriedades de potenciação",
+      "Porcentagem: cálculo, aumento/desconto, juros simples (J=C×i×t)",
+      "Razão, proporção e regra de três simples e composta",
+      "Números capicuas (palíndromos): números que lidos de trás para frente continuam iguais (ex: 22, 121, 1331)",
+      "<b>Teorema de Tales</b> e semelhança de triângulos, escalas",
+      "Equação de 1º grau (uma e duas incógnitas) e sistemas 2x2",
+      "Inequações de 1º grau (atenção ao inverter o sinal)",
+      "Equação de 2º grau: <b>fórmula de Bhaskara</b>, discriminante, soma e produto das raízes",
+      "Função afim: coeficiente angular/linear, gráfico (reta), zero da função",
+      "Função quadrática: parábola, concavidade, vértice",
+      "Radiciação (propriedades, simplificação, racionalização) e princípio da contagem",
+      "Áreas e perímetros: quadrado, retângulo, triângulo, círculo, trapézio, paralelogramo, losango",
+      "Volumes e áreas: cubo, paralelepípedo, prisma, cilindro, esfera, cone, pirâmide",
+      "<b>Teorema de Pitágoras</b> (hipotenusa e catetos) e relações métricas no triângulo retângulo",
+      "Trigonometria: seno, cosseno, tangente, ângulos notáveis (30°, 45°, 60°)",
+      "Ângulos: complementares, suplementares, retas paralelas cortadas por transversal, polígonos, circunferência",
+      "Estatística e probabilidade: média, moda, mediana, leitura de gráficos, probabilidade simples"
+    ]
+  },
+  {
+    id: "portugues",
+    order: "02",
+    name: "Língua Portuguesa",
+    tag: "15 questões",
+    items: [
+      "Leitura e interpretação: intertextualidade (paráfrase, paródia, citação)",
+      "Figuras de linguagem: metáfora, comparação, metonímia, ironia, hipérbole, antítese, eufemismo, personificação",
+      "Tipologia textual (narração, descrição, dissertação, injunção) e gêneros textuais",
+      "Coesão e coerência: conectivos causais, temporais, adversativos, conclusivos, aditivos",
+      "Pontuação: vírgula, ponto e vírgula, dois-pontos, aspas",
+      "Morfologia: as 10 classes gramaticais e sua função no texto",
+      "Formação de palavras: prefixação, sufixação, composição (justaposição e aglutinação)",
+      "Tempos e modos verbais (indicativo, subjuntivo, imperativo)",
+      "Sintaxe: concordância verbal e nominal (casos especiais)",
+      "Sintaxe: regência verbal e nominal",
+      "Frase, oração, período — simples x composto",
+      "Orações coordenadas (aditiva, adversativa, alternativa, conclusiva, explicativa)",
+      "Orações subordinadas substantivas (subjetiva, objetiva direta/indireta, completiva nominal, predicativa, apositiva)",
+      "Orações subordinadas adjetivas (restritivas x explicativas) e adverbiais (causal, temporal, condicional, concessiva etc.)",
+      "Semântica: denotação x conotação, sinonímia, antonímia, hiperonímia, hiponímia, polissemia"
+    ]
+  },
+  {
+    id: "natureza",
+    order: "03",
+    name: "Ciências da Natureza",
+    tag: "10 questões · Física, Química e Biologia",
+    items: [
+      "Física — Mecânica: sistemas de referência, grandezas escalares x vetoriais, MU e MUV",
+      "Física — as 3 Leis de Newton, trabalho, potência, conservação de energia",
+      "Física — Terra e Universo: movimentos da Terra, Sistema Solar, Sol-Terra-Lua",
+      "Física — Matéria e energia: ondas, luz, som, fontes de energia, dilatação térmica, calorimetria (Q=m×c×ΔT)",
+      "Química — Estrutura da matéria: modelos atômicos, próton/nêutron/elétron, número atômico x número de massa",
+      "Química — Tabela periódica: famílias, períodos, propriedades periódicas",
+      "Química — Misturas homogêneas x heterogêneas, métodos de separação, conservação da massa",
+      "Química — Funções químicas: ácidos, bases, óxidos, sais",
+      "Biologia — Doenças infecciosas x parasitárias, endemia/epidemia/pandemia, evolução (Lamarck x Darwin)",
+      "Biologia — Célula (organelas), fisiologia humana (digestório, respiratório, circulatório, nervoso)",
+      "Biologia — Ecologia: ecossistema, cadeia/teia alimentar, relações ecológicas, poluição"
+    ]
+  },
+  {
+    id: "humanas",
+    order: "04",
+    name: "Ciências Humanas",
+    tag: "10 questões · História e Geografia",
+    items: [
+      "História — Origem da humanidade, nomadismo x sedentarismo, povos indígenas brasileiros",
+      "História — Independência do Brasil (1822) e Iluminismo (Locke, Montesquieu, Rousseau, Voltaire)",
+      "História — Revolução Industrial, Imperialismo, 1ª Guerra Mundial, Primeira República no Brasil",
+      "História — Fascismo, nazismo, 2ª Guerra Mundial, Guerra Fria, Era Vargas (Estado Novo, CLT)",
+      "História — Fim da URSS, redemocratização do Brasil, Constituição de 1988, ONU e Direitos Humanos",
+      "Geografia — Recursos naturais, fontes de energia, dinâmica climática, biomas brasileiros",
+      "Geografia — Coordenadas geográficas, mapas temáticos e escala, movimentos populacionais, xenofobia",
+      "Geografia — Globalização e mundo do trabalho",
+      "Geografia — Movimentos da Terra, atmosfera, clima x tempo",
+      "Geografia — Regionalização do Brasil (aspectos físicos e econômicos) e continente africano (colonização, descolonização, Apartheid)"
+    ]
+  }
+];
+
+const STORAGE_KEY = "senai-study-checklist-v1";
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  }catch(e){ return {}; }
+}
+function saveState(state){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+}
+
+let state = loadState();
+
+function renderCountdown(){
+  const examDate = new Date('2026-07-25T10:00:00');
+  const now = new Date();
+  const diffMs = examDate - now;
+  const el = document.getElementById('countdownValue');
+  if(diffMs <= 0){
+    el.innerHTML = 'Hoje! <span>é o dia</span>';
+    return;
+  }
+  const days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+  el.innerHTML = days + ' <span>' + (days === 1 ? 'dia' : 'dias') + '</span>';
+}
+
+function render(){
+  const container = document.getElementById('subjects');
+  container.innerHTML = '';
+
+  let totalItems = 0, totalChecked = 0;
+
+  DATA.forEach((subject, sIndex) => {
+    const total = subject.items.length;
+    let checked = 0;
+    subject.items.forEach((_, i) => {
+      const key = subject.id + '-' + i;
+      if(state[key]) checked++;
+    });
+    totalItems += total;
+    totalChecked += checked;
+
+    const pct = total ? Math.round((checked/total)*100) : 0;
+
+    const subjectEl = document.createElement('div');
+    subjectEl.className = 'subject' + (sIndex === 0 ? ' open' : '');
+
+    subjectEl.innerHTML = `
+      <div class="subject-head" data-toggle="${subject.id}">
+        <div class="subject-head-left">
+          <div class="order-tag">${subject.order}</div>
+          <div>
+            <div class="subject-name">${subject.name}</div>
+            <div class="subject-meta">${subject.tag}</div>
+          </div>
+        </div>
+        <div class="subject-head-right">
+          <div class="subject-pct">${pct}%</div>
+          <div class="chev">&#9656;</div>
+        </div>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+      <div class="items">
+        <ul class="item-list">
+          ${subject.items.map((text, i) => {
+            const key = subject.id + '-' + i;
+            const isChecked = !!state[key];
+            return `<li class="item${isChecked ? ' checked' : ''}" data-key="${key}">
+              <input type="checkbox" ${isChecked ? 'checked' : ''} id="${key}">
+              <label for="${key}">${text}</label>
+            </li>`;
+          }).join('')}
+        </ul>
+      </div>
+    `;
+    container.appendChild(subjectEl);
+  });
+
+  document.getElementById('mainGauge').style.setProperty('--pct', totalItems ? Math.round((totalChecked/totalItems)*100) : 0);
+  document.getElementById('mainGaugeValue').textContent = (totalItems ? Math.round((totalChecked/totalItems)*100) : 0) + '%';
+  document.getElementById('mainStats').textContent = `${totalChecked} de ${totalItems} tópicos concluídos`;
+
+  // Event listeners
+  container.querySelectorAll('.subject-head').forEach(head => {
+    head.addEventListener('click', () => {
+      head.closest('.subject').classList.toggle('open');
+    });
+  });
+
+  container.querySelectorAll('.item').forEach(itemEl => {
+    itemEl.addEventListener('click', (e) => {
+      if(e.target.tagName === 'LABEL') return; // let label's default checkbox toggle happen via 'for'
+      const key = itemEl.dataset.key;
+      state[key] = !state[key];
+      saveState(state);
+      render();
+    });
+    const checkbox = itemEl.querySelector('input');
+    checkbox.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const key = itemEl.dataset.key;
+      state[key] = checkbox.checked;
+      saveState(state);
+      render();
+    });
+  });
+}
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if(confirm('Zerar todo o progresso marcado?')){
+    state = {};
+    saveState(state);
+    render();
+  }
+});
+
+render();
+renderCountdown();
+
+// POMODORO
+const MODES = { focus: 25*60, short: 5*60, long: 15*60 };
+let pomoMode = 'focus';
+let pomoSeconds = MODES.focus;
+let pomoRunning = false;
+let pomoInterval = null;
+
+const POMO_HISTORY_KEY = "senai-pomo-history-v1";
+
+function loadPomoHistory(){
+  try{
+    const raw = localStorage.getItem(POMO_HISTORY_KEY);
+    return raw ? JSON.parse(raw) : {};
+  }catch(e){ return {}; }
+}
+function savePomoHistory(hist){
+  try{ localStorage.setItem(POMO_HISTORY_KEY, JSON.stringify(hist)); }catch(e){}
+}
+function todayKey(){
+  return new Date().toISOString().slice(0,10); // YYYY-MM-DD
+}
+function registerFocusSession(){
+  const hist = loadPomoHistory();
+  const key = todayKey();
+  hist[key] = (hist[key] || 0) + 1;
+  savePomoHistory(hist);
+  renderPomoHistory();
+}
+function renderPomoHistory(){
+  const hist = loadPomoHistory();
+  const container = document.getElementById('pomoHistoryDays');
+  const days = Object.keys(hist).sort(); // todos os dias já registrados, do mais antigo ao mais recente
+  const todayStr = todayKey();
+  if(days.length === 0){
+    container.innerHTML = '<div class="pomo-empty">Nenhum ciclo de foco completado ainda. Termine um "Foco 25min" pra começar seu histórico.</div>';
+    return;
+  }
+  container.innerHTML = days.map(d => {
+    const dateObj = new Date(d + 'T00:00:00');
+    const label = dateObj.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' });
+    const count = hist[d] || 0;
+    return `<div class="pomo-day${d === todayStr ? ' today' : ''}">
+      <div class="pomo-day-date">${label}</div>
+      <div class="pomo-day-count">${count}<span> ciclo${count === 1 ? '' : 's'}</span></div>
+    </div>`;
+  }).join('');
+}
+
+const pomoTimeEl = document.getElementById('pomoTime');
+const pomoStartBtn = document.getElementById('pomoStart');
+const pomoResetBtn = document.getElementById('pomoReset');
+const pomoModeLabel = document.getElementById('pomoModeLabel');
+const modeLabels = { focus: 'Foco', short: 'Pausa curta', long: 'Pausa longa' };
+
+function formatTime(s){
+  const m = Math.floor(s/60).toString().padStart(2,'0');
+  const sec = (s%60).toString().padStart(2,'0');
+  return m + ':' + sec;
+}
+
+function updatePomoDisplay(){
+  pomoTimeEl.textContent = formatTime(pomoSeconds);
+  pomoTimeEl.classList.toggle('running', pomoRunning);
+  pomoModeLabel.textContent = 'Modo: ' + modeLabels[pomoMode];
+}
+
+function tickPomo(){
+  if(pomoSeconds <= 0){
+    clearInterval(pomoInterval);
+    pomoRunning = false;
+    pomoStartBtn.textContent = 'Iniciar';
+    updatePomoDisplay();
+    try{
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      osc.frequency.value = 880;
+      osc.connect(ctx.destination);
+      osc.start();
+      setTimeout(()=>osc.stop(), 350);
+    }catch(e){}
+    alert(pomoMode === 'focus' ? 'Tempo de foco terminado! Hora de uma pausa.' : 'Pausa terminada! De volta ao foco.');
+    if(pomoMode === 'focus'){
+      registerFocusSession();
+    }
+    return;
+  }
+  pomoSeconds--;
+  updatePomoDisplay();
+}
+
+pomoStartBtn.addEventListener('click', () => {
+  pomoRunning = !pomoRunning;
+  if(pomoRunning){
+    pomoStartBtn.textContent = 'Pausar';
+    pomoInterval = setInterval(tickPomo, 1000);
+  } else {
+    pomoStartBtn.textContent = 'Iniciar';
+    clearInterval(pomoInterval);
+  }
+  updatePomoDisplay();
+});
+
+pomoResetBtn.addEventListener('click', () => {
+  clearInterval(pomoInterval);
+  pomoRunning = false;
+  pomoSeconds = MODES[pomoMode];
+  pomoStartBtn.textContent = 'Iniciar';
+  updatePomoDisplay();
+});
+
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    pomoMode = btn.dataset.mode;
+    clearInterval(pomoInterval);
+    pomoRunning = false;
+    pomoSeconds = MODES[pomoMode];
+    pomoStartBtn.textContent = 'Iniciar';
+    updatePomoDisplay();
+  });
+});
+
+updatePomoDisplay();
+renderPomoHistory();
+</script>
+
+</body>
+</html>
